@@ -1,23 +1,35 @@
-const express = require('express')
-const { append } = require('express/lib/response');
+const express = require("express");
 
 // CONFIGURATION
-require('dotenv').config();
+require("dotenv").config();
 const PORT = process.env.PORT;
 const app = express();
-console.log(PORT);
 
+// DEPENDENCIES
+const methodOverride = require("method-override");
 
-//ROUTES
-app.get('/', (req, res)=>{
-    res.send('Welcome to an Awesome App about Breads!')
-})
+// MIDDLEWARE
+app.use(express.static("public")); // Exposing the public folder to the client
+app.use(express.urlencoded({ extended: true })); // Encoding your requests so they are Javascript formatted
+app.use(methodOverride('_method'))
+app.set("views", __dirname + "/views");
+app.set("view engine", "jsx");
+app.engine("jsx", require("express-react-views").createEngine()); // Allowing your server to read your views folder and the jsx files inside of them
 
-//Breads
-const breadsController = require('./controllers/breads_controller.js')
-app.use("/breads", breadsController)
+// Routes
+app.get("/", (req, res) => {
+  res.send("<h1>BreadCrud</h1>");
+});
 
-//LISTEN
-app.listen(PORT, () =>{
-    console.log('nomming at port', PORT);
-})
+// Breads
+const breadsController = require("./controllers/breads_controller.js");
+app.use("/breads", breadsController);
+
+// 404 Page
+app.get("*", (req, res) => {
+  res.render("404");
+});
+
+app.listen(PORT, () => {
+  console.log("nomming at port", PORT);
+});
