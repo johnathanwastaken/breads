@@ -6,7 +6,7 @@ const PORT = process.env.PORT;
 const app = express();
 
 // DEPENDENCIES
-const methodOverride = require("method-override");
+const methodOverride = require("express");
 
 // MIDDLEWARE
 app.use(express.static("public")); // Exposing the public folder to the client
